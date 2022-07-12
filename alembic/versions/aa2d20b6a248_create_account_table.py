@@ -31,6 +31,7 @@ def upgrade() -> None:
             server_default=sa.func.current_timestamp(),
             onupdate=sa.func.now(),
         ),
+        sa.Column("deleted_at", sa.DateTime),
     )
 
     op.create_index(op.f('index_feeds_nickname'), 'feeds', ['nickname'], unique=False)
