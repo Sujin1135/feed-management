@@ -9,6 +9,8 @@ license = "MIT"
 python = "^3.8"
 SQLAlchemy = "^1.4.39"
 alembic = "^1.8.0"
+PyMySQL = "^1.0.2"
+mysqlclient = "^2.1.1"
 
 [tool.poetry.dev-dependencies]
 
