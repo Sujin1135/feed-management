@@ -2,6 +2,7 @@ from typing import Optional
 
 from pydantic import Field, BaseModel
 
+from app.models.feed import Feed
 from app.schemas.base import BaseRes
 
 NICKNAME_FIELD = Field(title="nickname", max_length=50)
@@ -29,8 +30,24 @@ class FeedDelete(BaseModel):
 
 
 class FeedRes(BaseRes):
+    def __init__(self, model: Feed):
+        self.id = model.id
+        self.nickname = model.nickname
+        self.title = model.title
+        self.text = model.text
+        self.created_at = model.created_at
+        self.updated_at = model.updated_at
+        self.deleted_at = model.deleted_at
+
     id: int
     nickname: str
-    password: str
     title: str
     text: str
+
+
+class FeedFindReq(BaseModel):
+    limit: Optional[int] = Field(50, title="limit", ge=1)
+    offset: Optional[int] = Field(0, title="offset", ge=0)
+    order_by: Optional[str] = Field(title="order_by")
+    nickname: Optional[str] = Field(title="nickname", max_length=50)
+    title: Optional[str] = Field(title="title", max_length=100)

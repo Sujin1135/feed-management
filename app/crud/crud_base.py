@@ -89,7 +89,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         for k in keys:
             setattr(model, k, params[k])
 
-    def _parse_schedule_find_query(self, query_dict):
+    def _parse_find_query(self, query_dict):
         q = tuple(
             map(
                 lambda k: getattr(self.model, k) == query_dict[k],
@@ -173,7 +173,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     ) -> list:
         order_by = asc(self.model.id) if order_by is None else order_by
         try:
-            parsed_queries = self._parse_schedule_find_query(query_dict=queries)
+            parsed_queries = self._parse_find_query(query_dict=queries)
             session = get_db_session()
             data = (
                 session.query(self.model)
@@ -201,7 +201,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     ):
         order_by = asc(self.model.id) if order_by is None else order_by
         try:
-            parsed_queries = self._parse_schedule_find_query(query_dict=queries)
+            parsed_queries = self._parse_find_query(query_dict=queries)
             session = get_db_session()
             data = (
                 session.query(self.model)

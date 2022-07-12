@@ -3,8 +3,8 @@ import pytest
 from app.exceptions.not_found_error import NotFoundError
 from app.exceptions.unauthorized_error import UnauthorizedError
 from app.models.feed import Feed
-from app.schemas.feed import FeedCreate, FeedUpdate, FeedDelete
-from app.services.feed_service import create_feed, update_feed, soft_remove_feed, get_feed
+from app.schemas.feed import FeedCreate, FeedUpdate, FeedDelete, FeedFindReq
+from app.services.feed_service import create_feed, update_feed, soft_remove_feed, get_feed, find_feeds
 from app.tests.utils.faker import get_faker
 
 faker = get_faker()
@@ -77,3 +77,24 @@ def test_occur_unauthorized_error_when_delete_feed():
 
     with pytest.raises(UnauthorizedError):
         soft_remove_feed(created.id, FeedDelete(password=invalid_password))
+
+
+@pytest.mark.parametrize(
+    "limit,offset,order_by,nickname,title",
+    [
+        (20, 0, None, None, None),
+        (10, 0, "DESC_ID", "", ""),
+        (10, 0, "DESC_ID", faker.first_name_male(), ""),
+    ]
+)
+def test_get_feeds_by_queries(limit, offset, order_by, nickname, title):
+    params = FeedFindReq(
+        limit=10,
+        offset=0,
+        order_by=order_by,
+        nickname=nickname,
+        title=title,
+    )
+    sut = find_feeds(params)
+
+    assert len(sut) >= 0
