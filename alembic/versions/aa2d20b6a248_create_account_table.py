@@ -22,7 +22,7 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer, primary_key=True),
         sa.Column("nickname", sa.String(50), nullable=False),
         sa.Column("password", sa.String(60), nullable=False),
-        sa.Column("title", sa.String(10), nullable=False),
+        sa.Column("title", sa.String(100), nullable=False),
         sa.Column("text", sa.Text, nullable=False),
         sa.Column("created_at", sa.DateTime, server_default=sa.func.current_timestamp()),
         sa.Column(
