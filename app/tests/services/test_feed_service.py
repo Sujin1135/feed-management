@@ -1,8 +1,9 @@
 import pytest
 
 from app.exceptions.not_found_error import NotFoundError
+from app.exceptions.unauthorized_error import UnauthorizedError
 from app.models.feed import Feed
-from app.schemas.feed import FeedCreate, FeedUpdate
+from app.schemas.feed import FeedCreate, FeedUpdate, FeedDelete
 from app.services.feed_service import create_feed, update_feed, soft_remove_feed, get_feed
 from app.tests.utils.faker import get_faker
 
@@ -18,12 +19,12 @@ def _get_params() -> FeedCreate:
     )
 
 
-def _convert_model_to_update_feed(model: Feed) -> FeedUpdate:
+def _convert_model_to_update_feed(model: Feed, password: str) -> FeedUpdate:
     return FeedUpdate(
-        id=model.id,
         title=faker.last_name(),
         text=faker.text(),
         nickname=model.nickname,
+        password=password,
     )
 
 
@@ -38,20 +39,41 @@ def test_create_feed_data_correctly():
 
 def test_update_feed_data_correctly():
     data = _get_params()
+    password = data.password
     created = create_feed(data)
     created.title = faker.last_name()
-    params = _convert_model_to_update_feed(created)
-    sut = update_feed(params)
+    params = _convert_model_to_update_feed(created, password)
+    sut = update_feed(created.id, params)
 
     assert params.title == sut.title
     assert params.text == sut.text
     assert params.nickname == sut.nickname
-    assert params.id == sut.id
 
 
 def test_remove_feed_to_update_deleted_at():
-    created = create_feed(_get_params())
-    soft_remove_feed(created.id)
+    data = _get_params()
+    password = data.password
+    created = create_feed(data)
+    soft_remove_feed(created.id, FeedDelete(password=password))
 
     with pytest.raises(NotFoundError):
         get_feed(created.id)
+
+
+def test_occur_unauthorized_error_when_update_feed():
+    data = _get_params()
+    invalid_password = faker.name()
+    created = create_feed(data)
+    params = _convert_model_to_update_feed(created, invalid_password)
+
+    with pytest.raises(UnauthorizedError):
+        update_feed(created.id, params)
+
+
+def test_occur_unauthorized_error_when_delete_feed():
+    data = _get_params()
+    invalid_password = faker.name()
+    created = create_feed(data)
+
+    with pytest.raises(UnauthorizedError):
+        soft_remove_feed(created.id, FeedDelete(password=invalid_password))

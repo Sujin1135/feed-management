@@ -18,10 +18,14 @@ class FeedCreate(BaseModel):
 
 
 class FeedUpdate(BaseModel):
-    id: int = Field(title="id", ge=1)
     nickname: Optional[str] = NICKNAME_FIELD
     title: Optional[str] = TITLE_FIELD
     text: Optional[str] = TEXT_FIELD
+    password: str = PASSWORD_FIELD
+
+
+class FeedDelete(BaseModel):
+    password: str = PASSWORD_FIELD
 
 
 class FeedRes(BaseRes):
