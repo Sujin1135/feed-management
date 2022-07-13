@@ -9,7 +9,7 @@ from app.tests.utils.faker import get_faker
 faker = get_faker()
 
 
-def _get_reply_params(parent_id: int = None) -> ReplyCreate:
+def get_reply_params(parent_id: int = None) -> ReplyCreate:
     return ReplyCreate(
         nickname=faker.first_name_male(),
         comment=faker.text(),
@@ -27,8 +27,8 @@ def _get_reply_params(parent_id: int = None) -> ReplyCreate:
 )
 def test_get_and_create_feeds_by_queries(limit, offset):
     feed = create_feed(get_feed_params())
-    create_reply(feed.id, _get_reply_params())
-    create_reply(feed.id, _get_reply_params())
+    create_reply(feed.id, get_reply_params())
+    create_reply(feed.id, get_reply_params())
     sut = find_replies(feed.id, ReplyFindReq(limit=limit, offset=offset))
 
     assert len(sut.data) == 2
@@ -36,9 +36,9 @@ def test_get_and_create_feeds_by_queries(limit, offset):
 
 def test_get_nested_feeds():
     feed = create_feed(get_feed_params())
-    created = create_reply(feed.id, _get_reply_params())
-    create_reply(feed.id, _get_reply_params(created.id))
-    create_reply(feed.id, _get_reply_params(created.id))
+    created = create_reply(feed.id, get_reply_params())
+    create_reply(feed.id, get_reply_params(created.id))
+    create_reply(feed.id, get_reply_params(created.id))
     sut = find_replies(feed.id, ReplyFindReq(limit=10, offset=0, parent_id=created.id))
 
     assert len(sut.data) == 2

@@ -3,11 +3,17 @@ from fastapi.encoders import jsonable_encoder
 from starlette import status
 from starlette.responses import JSONResponse
 
+from app.apis.v1.endpoints import replies
 from app.schemas.except_msg import ExceptMessage, PydanticExceptMessage
 from app.schemas.feed import FeedFindRes, FeedFindReq, FeedRes, FeedCreate, FeedUpdate, FeedDelete
 from app.services.feed_service import find_feeds, create_feed, update_feed, soft_remove_feed
 
 router = APIRouter()
+router.include_router(
+    replies.router,
+    tags=["replies"],
+    prefix="/{feed_id}/replies",
+)
 
 
 @router.get(

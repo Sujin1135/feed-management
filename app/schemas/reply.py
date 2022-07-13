@@ -8,8 +8,8 @@ from app.schemas.feed import NICKNAME_FIELD
 
 FEED_ID = Field(title="feed_id")
 COMMENT_FIELD = Field(title="comment", min_length=1, max_length=255)
-PARENT_ID_FIELD = Field(title="parent_id", ge=1)
-DEPTH_ID_FIELD = Field(title="depth", ge=0)
+PARENT_ID_FIELD = Field(0, title="parent_id", ge=0)
+DEPTH_ID_FIELD = Field(0, title="depth", ge=0)
 
 
 class ReplyCreate(BaseModel):
