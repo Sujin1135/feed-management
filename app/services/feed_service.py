@@ -1,8 +1,10 @@
 from app.core.auth import gen_hashed_password, validate_password
 from app.core.find_param_utils import validate_order_by, get_queries
 from app.crud.crud_feed import crud_feed
+from app.enums.keyword_type import KeywordType
 from app.models.feed import Feed
 from app.schemas.feed import FeedCreate, FeedUpdate, FeedDelete, FeedRes, FeedFindReq, FeedFindRes
+from app.services.keyword_service import alert_keyword
 
 sort_options = {
     "ASC_ID": Feed.id.asc(),
@@ -43,7 +45,9 @@ def get_feed(feed_id: int) -> FeedRes:
 
 def create_feed(data: FeedCreate) -> FeedRes:
     data.password = gen_hashed_password(data.password)
-    return FeedRes.create_by_model(crud_feed.create(data))
+    result = FeedRes.create_by_model(crud_feed.create(data))
+    alert_keyword(KeywordType.FEED, data.text)
+    return result
 
 
 def update_feed(feed_id: int, data: FeedUpdate) -> FeedRes:

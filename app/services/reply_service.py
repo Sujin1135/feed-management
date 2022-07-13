@@ -1,8 +1,10 @@
 from app.core.find_param_utils import get_queries
 from app.crud.crud_reply import crud_reply
+from app.enums.keyword_type import KeywordType
 from app.models.reply import Reply
 from app.schemas.feed import FeedFindRes
 from app.schemas.reply import ReplyCreate, ReplyFindReq, ReplyFindRes, ReplyRes
+from app.services.keyword_service import alert_keyword
 
 
 def find_replies(feed_id: int, params: ReplyFindReq) -> FeedFindRes:
@@ -26,4 +28,6 @@ def find_replies(feed_id: int, params: ReplyFindReq) -> FeedFindRes:
 def create_reply(feed_id: int, data: ReplyCreate) -> ReplyRes:
     data.feed_id = feed_id
     data.depth = 1 if data.parent_id else 0
-    return ReplyRes.create_by_model(crud_reply.create(data))
+    result = ReplyRes.create_by_model(crud_reply.create(data))
+    alert_keyword(KeywordType.REPLY, data.comment)
+    return result

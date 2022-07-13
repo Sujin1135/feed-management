@@ -20,8 +20,8 @@ def upgrade() -> None:
     op.create_table(
         "keywords",
         sa.Column("id", sa.Integer, primary_key=True),
-        sa.Column("nickname", sa.Integer, nullable=False),
-        sa.Column("keyword", sa.Integer, nullable=True),
+        sa.Column("nickname", sa.String(50), nullable=False),
+        sa.Column("keyword", sa.String(50), nullable=True),
         sa.Column("created_at", sa.DateTime, server_default=sa.func.current_timestamp()),
         sa.Column(
             "updated_at",
