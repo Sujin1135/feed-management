@@ -24,6 +24,12 @@ def upgrade() -> None:
         sa.Column("nickname", sa.String(50), nullable=False),
         sa.Column("comment", sa.String(255), nullable=False),
         sa.Column("created_at", sa.DateTime, server_default=sa.func.current_timestamp()),
+        sa.Column(
+            "updated_at",
+            sa.DateTime,
+            server_default=sa.func.current_timestamp(),
+            onupdate=sa.func.now(),
+        ),
         sa.Column("deleted_at", sa.DateTime),
     )
 
