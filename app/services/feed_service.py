@@ -32,24 +32,24 @@ def find_feeds(params: FeedFindReq) -> FeedFindRes:
         limit=options["limit"],
         offset=options["offset"],
     )
-    result = list(map(lambda x: FeedRes(x), feeds))
+    result = list(map(lambda x: FeedRes.create_by_model(x), feeds))
 
     return FeedFindRes(count=len(result), data=result)
 
 
 def get_feed(feed_id: int) -> FeedRes:
-    return FeedRes(crud_feed.get(feed_id))
+    return FeedRes.create_by_model(crud_feed.get(feed_id))
 
 
 def create_feed(data: FeedCreate) -> FeedRes:
     data.password = gen_hashed_password(data.password)
-    return FeedRes(crud_feed.create(data))
+    return FeedRes.create_by_model(crud_feed.create(data))
 
 
 def update_feed(feed_id: int, data: FeedUpdate) -> FeedRes:
     validate_password(data.password, crud_feed.get(feed_id).password)
     data.password = None
-    return FeedRes(crud_feed.update(feed_id, data))
+    return FeedRes.create_by_model(crud_feed.update(feed_id, data))
 
 
 def soft_remove_feed(feed_id: int, data: FeedDelete) -> None:

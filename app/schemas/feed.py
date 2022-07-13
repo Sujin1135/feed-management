@@ -24,20 +24,27 @@ class FeedUpdate(BaseModel):
     text: Optional[str] = TEXT_FIELD
     password: str = PASSWORD_FIELD
 
+    class Config:
+        arbitrary_types_allowed = True
+
 
 class FeedDelete(BaseModel):
     password: str = PASSWORD_FIELD
 
 
 class FeedRes(BaseRes):
-    def __init__(self, model: Feed):
-        self.id = model.id
-        self.nickname = model.nickname
-        self.title = model.title
-        self.text = model.text
-        self.created_at = model.created_at
-        self.updated_at = model.updated_at
-        self.deleted_at = model.deleted_at
+
+    @staticmethod
+    def create_by_model(model: Feed):
+        return FeedRes(
+            id=model.id,
+            nickname=model.nickname,
+            title=model.title,
+            text=model.text,
+            created_at=model.created_at,
+            updated_at=model.updated_at,
+            deleted_at=model.deleted_at,
+        )
 
     id: int
     nickname: str

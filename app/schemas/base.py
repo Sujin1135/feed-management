@@ -1,8 +1,9 @@
 from datetime import datetime
-from typing import Optional
+
+from pydantic import BaseModel
 
 
-class BaseRes:
+class BaseRes(BaseModel):
     created_at: datetime
     updated_at: datetime
-    deleted_at: Optional[datetime]
+    deleted_at: datetime = None
