@@ -20,7 +20,7 @@ def find_replies(feed_id: int, params: ReplyFindReq) -> FeedFindRes:
         offset=options["offset"],
     )
     result = list(map(lambda x: ReplyRes.create_by_model(x), replies))
-    return ReplyFindRes(data=result, count=len(result))
+    return ReplyFindRes(data=result, count=crud_reply.count(parsed_queries))
 
 
 def create_reply(feed_id: int, data: ReplyCreate) -> ReplyRes:

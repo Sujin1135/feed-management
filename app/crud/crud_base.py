@@ -192,6 +192,23 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         finally:
             session.close()
 
+    def count(self, queries: dict = {}) -> int:
+        try:
+            parsed_queries = self._parse_find_query(query_dict=queries)
+            session = get_db_session()
+            return (
+                session.query(self.model)
+                .filter(*parsed_queries)
+                .filter(self.model.deleted_at == None)
+                .count()
+            )
+
+        except Exception as e:
+            logging.error("*** occurred a mysql error when find a model as below")
+            raise e
+        finally:
+            session.close()
+
     def find_with_deleted(
             self,
             queries: dict = {},
