@@ -21,7 +21,7 @@ def upgrade() -> None:
         "replies",
         sa.Column("id", sa.Integer, primary_key=True),
         sa.Column("feed_id", sa.Integer, nullable=False),
-        sa.Column("parent_id", sa.Integer, nullable=False),
+        sa.Column("parent_id", sa.Integer, nullable=True),
         sa.Column("depth", sa.Integer, default=0),
         sa.Column("nickname", sa.String(50), nullable=False),
         sa.Column("comment", sa.String(255), nullable=False),
