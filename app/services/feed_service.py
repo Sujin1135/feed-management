@@ -2,7 +2,7 @@ from app.core.auth import gen_hashed_password, validate_password
 from app.core.find_param_utils import validate_order_by, get_queries
 from app.crud.crud_feed import crud_feed
 from app.models.feed import Feed
-from app.schemas.feed import FeedCreate, FeedUpdate, FeedDelete, FeedRes, FeedFindReq
+from app.schemas.feed import FeedCreate, FeedUpdate, FeedDelete, FeedRes, FeedFindReq, FeedFindRes
 
 sort_options = {
     "ASC_ID": Feed.id.asc(),
@@ -15,15 +15,14 @@ sort_options = {
 }
 
 
-def find_feeds(params: FeedFindReq) -> list:
+def find_feeds(params: FeedFindReq) -> FeedFindRes:
     options = params.dict()
 
-    if not validate_order_by(options["order_by"], sort_options):
-        raise ValueError("올바른 정렬값이 아닙니다.")
+    validate_order_by(options["order_by"], sort_options)
 
     order_by = (
         options["order_by"]
-        if options["order_by"] is None
+        if options["order_by"] is sort_options["DESC_ID"]
         else sort_options.get(options["order_by"])
     )
     parsed_queries = get_queries(options)
@@ -33,8 +32,9 @@ def find_feeds(params: FeedFindReq) -> list:
         limit=options["limit"],
         offset=options["offset"],
     )
+    result = list(map(lambda x: FeedRes(x), feeds))
 
-    return list(map(lambda x: FeedRes(x), feeds))
+    return FeedFindRes(count=len(result), data=result)
 
 
 def get_feed(feed_id: int) -> FeedRes:

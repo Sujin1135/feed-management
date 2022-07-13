@@ -45,6 +45,11 @@ class FeedRes(BaseRes):
     text: str
 
 
+class FeedFindRes(BaseModel):
+    count: int
+    data: list
+
+
 class FeedFindReq(BaseModel):
     limit: Optional[int] = Field(50, title="limit", ge=1)
     offset: Optional[int] = Field(0, title="offset", ge=0)

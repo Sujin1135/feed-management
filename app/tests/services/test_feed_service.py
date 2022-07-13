@@ -97,4 +97,4 @@ def test_get_feeds_by_queries(limit, offset, order_by, nickname, title):
     )
     sut = find_feeds(params)
 
-    assert len(sut) >= 0
+    assert sut.count >= 0
