@@ -64,7 +64,6 @@ alembic upgrade head
 uvicorn main:app --reload
 ```
 
-- Swagger path - 127.0.0.1:8000/docs
 - Test
 테스트 파일은 해당 프로젝트 root 경로 기준 'app/tests' 하위에 있으며 서비스 로직, API 요청 모두 테스트 코드를 실행하여 단위 테스트를 진행하실 수 있습니다
 
@@ -74,3 +73,20 @@ uvicorn main:app --reload
   # 해당경로 아래 모든 테스트 케이스 실행
   pytest
 ```
+
+## APIs
+게시글의 경우 삭제 요청 시 DB에서 실제로 삭제되는게 아닌 삭제일을 컬럼을 업데이트 하여 관리하며 댓글은 대댓글 까지만 달 수 있도록 구현되어 있습니다. <br />
+<br />
+키워드 알림은 테이블, 모델, 리포지토리 구성까지 하였으며 키워드 알림 메서드를 호출하도록 하였고 과제 내용에 따라 실제 알림 보내는 기능은 구현하지 않았습니다.
+
+- Swagger path - 127.0.0.1:8000/docs
+
+- 게시글
+    - [GET] /api/v1/feeds - 게시글 목록 조회
+    - [POST] /api/v1/feeds - 게시글 등록
+    - [PATCH] /api/v1/feeds/{feed_id} - 게시글 수정
+    - [PATCH] /api/v1/feeds/{feed_id}/remove - 게시글 삭제 
+
+- 댓글
+  - [GET] /api/v1/feeds/{feed_id}/replies - 댓글 목록 조회
+  - [POST] /api/v1/feeds/{feed_id}/replies - 댓글 생성
