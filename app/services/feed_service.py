@@ -34,7 +34,7 @@ def find_feeds(params: FeedFindReq) -> FeedFindRes:
     )
     result = list(map(lambda x: FeedRes.create_by_model(x), feeds))
 
-    return FeedFindRes(count=len(result), data=result)
+    return FeedFindRes(data=result, count=len(result))
 
 
 def get_feed(feed_id: int) -> FeedRes:

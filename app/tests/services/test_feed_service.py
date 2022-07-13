@@ -10,7 +10,7 @@ from app.tests.utils.faker import get_faker
 faker = get_faker()
 
 
-def _get_params() -> FeedCreate:
+def get_feed_params() -> FeedCreate:
     return FeedCreate(
         title=faker.name(),
         text=faker.text(),
@@ -29,7 +29,7 @@ def _convert_model_to_update_feed(model: Feed, password: str) -> FeedUpdate:
 
 
 def test_create_feed_data_correctly():
-    data = _get_params()
+    data = get_feed_params()
     sut = create_feed(data)
 
     assert data.title == sut.title
@@ -38,7 +38,7 @@ def test_create_feed_data_correctly():
 
 
 def test_update_feed_data_correctly():
-    data = _get_params()
+    data = get_feed_params()
     password = data.password
     created = create_feed(data)
     created.title = faker.last_name()
@@ -51,7 +51,7 @@ def test_update_feed_data_correctly():
 
 
 def test_remove_feed_to_update_deleted_at():
-    data = _get_params()
+    data = get_feed_params()
     password = data.password
     created = create_feed(data)
     soft_remove_feed(created.id, FeedDelete(password=password))
@@ -61,7 +61,7 @@ def test_remove_feed_to_update_deleted_at():
 
 
 def test_occur_unauthorized_error_when_update_feed():
-    data = _get_params()
+    data = get_feed_params()
     invalid_password = faker.name()
     created = create_feed(data)
     params = _convert_model_to_update_feed(created, invalid_password)
@@ -71,7 +71,7 @@ def test_occur_unauthorized_error_when_update_feed():
 
 
 def test_occur_unauthorized_error_when_delete_feed():
-    data = _get_params()
+    data = get_feed_params()
     invalid_password = faker.name()
     created = create_feed(data)
 
@@ -89,8 +89,8 @@ def test_occur_unauthorized_error_when_delete_feed():
 )
 def test_get_feeds_by_queries(limit, offset, order_by, nickname, title):
     params = FeedFindReq(
-        limit=10,
-        offset=0,
+        limit=limit,
+        offset=offset,
         order_by=order_by,
         nickname=nickname,
         title=title,
